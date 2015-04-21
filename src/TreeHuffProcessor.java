@@ -133,9 +133,7 @@ public class TreeHuffProcessor implements IHuffProcessor {
 		// traverse
 		int inBits = input.readBits(1);
 		TreeNode current = root;
-		StringBuilder sb = new StringBuilder();
 		while (inBits != -1 && current.myValue != PSEUDO_EOF) {
-			sb.append(inBits);
 			if (current.myLeft == null && current.myRight == null) {
 				output.writeBits(BITS_PER_WORD, current.myValue);
 				numBits += BITS_PER_WORD;

@@ -25,7 +25,6 @@ public class SimpleHuffProcessor implements IHuffProcessor {
 		IHuffProcessor huff = new SimpleHuffProcessor();
 		huff.preprocessCompress(in);
 		huff.compress(in, System.out, true);
-		System.out.println("\n\n");
 	}
 
 	public void update(String s) {
@@ -46,7 +45,6 @@ public class SimpleHuffProcessor implements IHuffProcessor {
 		TreeNode root = reduceForest(pq);
 		buildEncodingMap(root);
 		bitsSaved = getBitsSaved(root);
-		printTree(root, 0);
 		return bitsSaved;
 	}
 
@@ -119,11 +117,6 @@ public class SimpleHuffProcessor implements IHuffProcessor {
 		for (int i = 0; i < ALPH_SIZE; i++) {
 			counts[i] = input.readBits(BITS_PER_INT);
 		}
-		for (int i = 0; i < ALPH_SIZE; i++) {
-			if (counts[i] != 0) {
-				System.out.printf("%c: %d\n", (char) i, counts[i]);
-			}
-		}
 
 		PriorityQueue<TreeNode> pq = buildPQ(counts);
 		TreeNode root = reduceForest(pq);
@@ -133,9 +126,7 @@ public class SimpleHuffProcessor implements IHuffProcessor {
 		// traverse
 		int inBits = input.readBits(1);
 		TreeNode current = root;
-		StringBuilder sb = new StringBuilder();
 		while (inBits != -1 && current.myValue != PSEUDO_EOF) {
-			sb.append(inBits);
 			if (current.myLeft == null && current.myRight == null) {
 				output.writeBits(BITS_PER_WORD, current.myValue);
 				numBits += BITS_PER_WORD;
@@ -150,8 +141,6 @@ public class SimpleHuffProcessor implements IHuffProcessor {
 
 			}
 		}
-		System.out.println();
-		System.out.println(sb.toString());
 		return numBits;
 	}
 
@@ -217,19 +206,5 @@ public class SimpleHuffProcessor implements IHuffProcessor {
 			}
 		}
 		return origBits - huffBits;
-	}
-
-	private void printTree(TreeNode node, int tabLevel) {
-		if (node == null) return;
-		for (int i = 0; i < tabLevel; i++) {
-			System.out.print('\t');
-		}
-		if (node.myValue == -1) {
-			System.out.println(node.myWeight);
-		} else {
-			System.out.println(node.myValue);
-		}
-		printTree(node.myLeft, tabLevel + 1);
-		printTree(node.myRight, tabLevel + 1);
 	}
 }
